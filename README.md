@@ -1,6 +1,6 @@
 # Installation
 
-`npm install rinex`
+`npm install rinex -g`
 
 # Usage
 
