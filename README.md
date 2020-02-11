@@ -1,14 +1,14 @@
-# Installation
+## Installation
 
 `npm install rinex -g`
 
-# Usage
+## Usage
 
 ### Retrieve rinex from noaa network
 
 `$ rinex nybp 2020-02-10T00:00:00Z 2020-02-10T10:00:00Z`
 
-### Help
+## Help
 
 `rinex -h`
 
