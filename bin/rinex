@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+
+const gnssAdapters = require('../src/gnssAdapters');
+const DownloadManager = require('../src/downloadManager');
+const RinexMerge = require('../src/rinexMerge');
+
+const { ArgumentParser } = require('argparse');
+
+const parser = new ArgumentParser({
+  version: '0.0.1',
+  addHelp:true,
+  description: 'Library to help grab Rinex observations from GNSS networks'
+});
+
+parser.addArgument('baseId', { help: 'base station ID' });
+parser.addArgument('start', { help: 'Initial date range' });
+parser.addArgument('end', { help: 'Final date range' });
+
+parser.addArgument([ '-n', '--gnss' ], {
+  help: 'GNSS network adapter service',
+  defaultValue: 'noaa',
+  choices: Object.keys(gnssAdapters)
+});
+
+parser.addArgument([ '-o', '--output' ], {
+  help: 'Output observation rinex file',
+  defaultValue: './output.obs'
+});
+
+parser.addArgument([ '-vv', '--verbose' ], {
+  help: 'Verbose mode',
+  action: 'storeTrue'
+});
+
+const args = parser.parseArgs();
+
+// Get adapter
+const GNSSNetworkAdapter = gnssAdapters[args.gnss];
+
+// bulk download manager (async multiple downloads)
+const dmanager = new DownloadManager({
+  adapter: new GNSSNetworkAdapter(args)
+});
+
+const rinexMerge = new RinexMerge(args.output);
+
+dmanager.on('start', (url) => {
+  console.log(`${url} (downloading...)`);
+});
+
+dmanager.on('pending', (url) => {
+  console.log(`${url} (pending...)`);
+});
+
+dmanager.on('error', (err) => {
+  console.log(`Download error: ${err}`);
+});
+
+dmanager.on('finished', (url) => {
+  console.log(`${url} (done)`);
+});
+
+dmanager.init({
+  success: (downloadedFiles) => {
+    console.log('Merging rinex files...')
+    rinexMerge.mergeFiles(downloadedFiles).then((outputFile) => {
+      console.log('outputFile:', outputFile);
+    });
+  },
+  error: (err) => {
+    console.error(err);
+    process.exit(1);
+  }
+})
