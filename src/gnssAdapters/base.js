@@ -3,7 +3,7 @@ const moment = require('moment');
 const mkdirp = require('mkdirp');
 /**
  * Base adapter class with common functions
- * and instance constructions 
+ * and instance constructions
  */
 const FIRST_CHAR = 97;
 
@@ -14,9 +14,9 @@ class Adapter {
     this.end = moment(args.end, 'YYYY-MM-DDTHH:mm:ss');
     this.tempFolder = '/tmp'
   }
-  
+
   /**
-   * It requires implementations from 
+   * It requires implementations from
    * every specific adpater
    */
   buildUrl({ jdn, year, block }) {
@@ -24,9 +24,9 @@ class Adapter {
   }
 
   /**
-   * It requires implementations from 
+   * It requires implementations from
    * every specific adpater
-   * @param arg1 url - string: Url or file name 
+   * @param arg1 url - string: Url or file name
    * @params arg2 statusObj - Obj[sucess:func, error:func, pending:func]
    */
   download(url, { sucess, error, pending }) {
@@ -63,23 +63,14 @@ class Adapter {
    */
   getHourBlock(hour) {
     return String.fromCharCode(FIRST_CHAR + parseInt(hour));
-    // let count = 0;
-    // const charMap = {};
-    // for(let i=97; i <= 120; i++) {
-    //   charMap[count] = String.fromCharCode(i);
-    //   count++;
-    // }
-    // return charMap;
   }
 
   getFilesToDownload() {
-    // const blocks = this.getHourBlock();
     const fileList = [];
     while(true) {
       // julian day number
       const jdn = this.start.format('DDDD');
       const year = this.start.year();
-      // const block = blocks[this.start.hour()];
       const block = this.getHourBlock(this.start.hour())
       fileList.push(this.buildUrl({ jdn, year, block }));
       if (this.start >= this.end) {

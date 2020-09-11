@@ -61,9 +61,9 @@ dmanager.on('finished', (url) => {
 });
 
 dmanager.init({
-  success: (downloadedFiles) => {
+  success: async (downloadedFiles) => {
     console.log('Merging rinex files...')
-    rinexMerge.mergeFiles(downloadedFiles).then((outputFile) => {
+    return rinexMerge.mergeFiles(downloadedFiles).then((outputFile) => {
       console.log('outputFile:', outputFile);
     });
   },

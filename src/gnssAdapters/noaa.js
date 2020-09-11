@@ -1,15 +1,22 @@
 const fs = require('fs');
+const rimraf = require("rimraf");
 const path = require('path');
 const BaseAdapter = require('./base');
 const gunzip = require('gunzip-file');
 
-const FTP_DOMAIN = 'www.ngs.noaa.gov';
+const TEMP_FOLDER_PREFIX = '/tmp/noaa_downloads';
+
+const SERVERS = [
+  { host: 'geodesy.noaa.gov', name: 'Primary' },
+  { host: 'alt.ngs.noaa.gov', name: 'Alternative' }
+];
+
 const ftp = require('basic-ftp');
 
 class NOAA extends BaseAdapter {
   constructor(opts) {
     super(opts);
-    this.createTempFolder(`/tmp/noaa_downloads_${new Date().getTime()}`);
+    this.createTempFolder(`${TEMP_FOLDER_PREFIX}_${new Date().getTime()}`);
 
     this.pendingQueue = [];
   }
@@ -22,35 +29,59 @@ class NOAA extends BaseAdapter {
     gunzip(filename, filename.replace('.gz', ''));
   }
 
-  cleanUp(filename) {
+  cleanUp() {
     try {
-      fs.unlinkSync(filename);
-    } catch(err) {}
+      // Security check to make sure is same temp
+      // prefix to avoid remove wrong folders
+      if (this.tempFolder.startsWith(TEMP_FOLDER_PREFIX)) {
+        console.log('Cleanup')
+        try {
+          fs.rmdirSync(this.tempFolder, { recursive: true });
+        } catch(e) {
+          rimraf.sync(this.tempFolder);
+        }
+      }
+    } catch(err) {
+      console.log(err);
+    }
   }
 
-  download(url, opts = {}) {
+  async download(url, opts = {}) {
     const client = new ftp.Client();
     const filename = `${this.tempFolder}/${path.basename(url)}`;
-  
-    client.access({ host: FTP_DOMAIN })
-      .then(() => {
-        return client.downloadTo(filename, url);
-      })
-      .then(() => {
-        opts.success(url, filename);
-        return client.close();
-      })
-      .catch(err => {
+
+    const doDownload = async (server) => {
+      await client.access({ host: server.host });
+      return client.downloadTo(filename, url)
+        .then(() => {
+          opts.success(url, filename);
+          return client.close();
+        });
+    }
+
+    for (let index in SERVERS) {
+      const isLastLoop = parseInt(index) === SERVERS.length - 1;
+
+      try {
+        await doDownload(SERVERS[index]);
+        break;
+      } catch(err) {
+        if (!isLastLoop) {
+          const nextServer = SERVERS[parseInt(index) + 1];
+          console.log(`${url} (Retrying with ${nextServer.name} server ${nextServer.host})`);
+          continue;
+        }
         switch(err.code) {
           case 421:
-            return opts.pending(this.download.bind(this, url, opts));
+            await opts.pending(this.download.bind(this, url, opts));
           case 550:
           case 'ENOTFOUND':
           default:
             opts.error(err);
-            return client.close();
+            await client.close();
         }
-      });
+      }
+    }
   }
 }
 

@@ -26,6 +26,7 @@ class DownloadManager {
 
   async startBatchDownload(items) {
     const promises = [];
+
     for (let url of this.filesToDownload) {
       const queue = new Promise((resolve, reject) => {
         this.call('start', [ url ]);
@@ -40,9 +41,8 @@ class DownloadManager {
               const nextJob = this.pendingQueue.shift();
               nextJob();
             }
-            
+
             this.adapter.unzip(filename);
-            this.adapter.cleanUp(filename);
           },
           pending: (pendingQueue) => {
             this.call('pending', [ url ]);
@@ -55,13 +55,15 @@ class DownloadManager {
       });
       promises.push(queue);
     }
+
     return Promise.all(promises);
   }
 
   async init(status) {
     try {
       await this.startBatchDownload(this.filesToDownload);
-      status.success(this.adapter.downloadedFiles());
+      await status.success(this.adapter.downloadedFiles());
+      await this.adapter.cleanUp();
     } catch(err) {
       return status.error(err);
     }
