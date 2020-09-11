@@ -1,6 +1,6 @@
 {
   "name": "gnss-rinex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GNSS Networks to download rinex observations",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,15 @@
   "bin": {
     "rinex": "./bin/rinex"
   },
+  "keywords": [
+    "gnss",
+    "rinex",
+    "satellite",
+    "navigation",
+    "gps",
+    "noaa",
+    "ordnancesurvey"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

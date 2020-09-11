@@ -1,6 +1,6 @@
 ## Installation
 
-`npm install rinex -g`
+`npm install gnss-rinex -g`
 
 ## Usage
 
@@ -30,5 +30,3 @@
     -o OUTPUT, --output OUTPUT
                             Output observation rinex file
     -vv, --verbose        Verbose mode
-
-

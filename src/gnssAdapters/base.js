@@ -5,6 +5,8 @@ const mkdirp = require('mkdirp');
  * Base adapter class with common functions
  * and instance constructions 
  */
+const FIRST_CHAR = 97;
+
 class Adapter {
   constructor(args) {
     this.baseId = args.baseId;
@@ -59,24 +61,26 @@ class Adapter {
   /**
    * It returns an map from a=0 to z=23
    */
-  getAlphabetHourBlocks() {
-    let count = 0;
-    const charMap = {};
-    for(let i=97; i <= 120; i++) {
-      charMap[count] = String.fromCharCode(i);
-      count++;
-    }
-    return charMap;
+  getHourBlock(hour) {
+    return String.fromCharCode(FIRST_CHAR + parseInt(hour));
+    // let count = 0;
+    // const charMap = {};
+    // for(let i=97; i <= 120; i++) {
+    //   charMap[count] = String.fromCharCode(i);
+    //   count++;
+    // }
+    // return charMap;
   }
 
   getFilesToDownload() {
-    const blocks = this.getAlphabetHourBlocks();
+    // const blocks = this.getHourBlock();
     const fileList = [];
     while(true) {
       // julian day number
       const jdn = this.start.format('DDDD');
       const year = this.start.year();
-      const block = blocks[this.start.hour()];
+      // const block = blocks[this.start.hour()];
+      const block = this.getHourBlock(this.start.hour())
       fileList.push(this.buildUrl({ jdn, year, block }));
       if (this.start >= this.end) {
         break;
