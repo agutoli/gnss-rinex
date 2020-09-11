@@ -7,6 +7,7 @@
 ### Retrieve rinex from noaa network
 
 `$ rinex auscors alby 2020-09-09T00:00:00Z 2020-09-09T10:00:00Z -o ./demo_output.obs -vv`
+
 `# rinex noaa 1lsu 2020-09-09T00:00:00Z 2020-09-09T10:00:00Z -o ./demo_output.obs -vv`
 
 ## Help
