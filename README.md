@@ -14,21 +14,21 @@
 
 `rinex -h`
 
-    usage: rinex [-h] [-v] [-n {noaa,ordnancesurvey}] [-o OUTPUT] [-vv]
-                baseId start end
+    usage: rinex [-h] [-v] [-o OUTPUT] [-vv]
+                 {noaa,auscors,ordnancesurvey} baseId date_start date_end
 
     Library to help grab Rinex observations from GNSS networks
 
     Positional arguments:
-    baseId                base station ID
-    start                 Initial date range
-    end                   Final date range
+      {noaa,auscors,ordnancesurvey}
+                            GNSS network adapter service
+      baseId                base station ID
+      date_start            Initial date range ex. ISO 2020-09-09T00:00:00Z
+      date_end              Final date range ex. ISO 2020-09-09T00:00:00Z
 
     Optional arguments:
-    -h, --help            Show this help message and exit.
-    -v, --version         Show program's version number and exit.
-    -n {noaa,ordnancesurvey}, --gnss {noaa,ordnancesurvey}
-                            GNSS network adapter service
-    -o OUTPUT, --output OUTPUT
+      -h, --help            Show this help message and exit.
+      -v, --version         Show program's version number and exit.
+      -o OUTPUT, --output OUTPUT
                             Output observation rinex file
-    -vv, --verbose        Verbose mode
+      -vv, --verbose        Verbose mode
