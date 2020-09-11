@@ -64,7 +64,8 @@ class DownloadManager {
       await status.success(this.adapter.downloadedFiles());
       await this.adapter.cleanUp();
     } catch(err) {
-      return status.error(err);
+      await status.error(err);
+      await this.adapter.cleanUp();
     }
   }
 }

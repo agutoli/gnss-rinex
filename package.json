@@ -1,6 +1,6 @@
 {
   "name": "gnss-rinex",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "GNSS Networks to download rinex observations",
   "main": "index.js",
   "scripts": {
