@@ -6,7 +6,7 @@
 
 ### Retrieve rinex from noaa network
 
-`$ rinex nybp 2020-02-10T00:00:00Z 2020-02-10T10:00:00Z`
+`$ rinex --gnss noaa 1lsu 2020-09-09T00:00:00Z 2020-09-09T10:00:00Z -o ./demo_output.obs`
 
 ## Help
 
