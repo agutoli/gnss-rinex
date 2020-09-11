@@ -11,8 +11,8 @@ class Adapter {
   constructor(args) {
     this.verbose = args.verbose;
     this.baseId = args.baseId;
-    this.start = moment(args.start, 'YYYY-MM-DDTHH:mm:ss');
-    this.end = moment(args.end, 'YYYY-MM-DDTHH:mm:ss');
+    this.start = moment(args.date_start, 'YYYY-MM-DDTHH:mm:ss');
+    this.end = moment(args.date_end, 'YYYY-MM-DDTHH:mm:ss');
     this.tempFolder = '/tmp'
   }
 
@@ -71,9 +71,10 @@ class Adapter {
     while(true) {
       // julian day number
       const jdn = this.start.format('DDDD');
-      const year = this.start.year();
-      const block = this.getHourBlock(this.start.hour())
-      fileList.push(this.buildUrl({ jdn, year, block }));
+      const year = this.start.format('YYYY');
+      const hour = this.start.format('HH');
+      const block = this.getHourBlock(hour)
+      fileList.push(this.buildUrl({ jdn, hour, year, block }));
       if (this.start >= this.end) {
         break;
       }

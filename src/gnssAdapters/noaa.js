@@ -78,7 +78,7 @@ class NOAA extends BaseAdapter {
         }
         switch(err.code) {
           case 421:
-            await opts.pending(this.download.bind(this, url, opts));
+            return opts.pending(this.download.bind(this, url, opts));
           case 550:
           case 'ENOTFOUND':
           default:

@@ -3,6 +3,7 @@
 const gnssAdapters = require('../src/gnssAdapters');
 const DownloadManager = require('../src/downloadManager');
 const RinexMerge = require('../src/rinexMerge');
+const isISODate = require( 'is-iso-date' );
 
 const { ArgumentParser } = require('argparse');
 
@@ -12,14 +13,32 @@ const parser = new ArgumentParser({
   description: 'Library to help grab Rinex observations from GNSS networks'
 });
 
-parser.addArgument('baseId', { help: 'base station ID' });
-parser.addArgument('start', { help: 'Initial date range' });
-parser.addArgument('end', { help: 'Final date range' });
-
-parser.addArgument([ '-n', '--gnss' ], {
+parser.addArgument('gnss', {
   help: 'GNSS network adapter service',
-  defaultValue: 'noaa',
+  type: String,
   choices: Object.keys(gnssAdapters)
+});
+
+parser.addArgument('baseId', {
+  type: String,
+  help: 'base station ID'
+});
+
+const dateType = (value) => {
+  if (!isISODate(value)) {
+    throw new Error;
+  }
+  return value;
+}
+
+parser.addArgument('date_start', {
+  type: dateType,
+  help: 'Initial date range ex. ISO 2020-09-09T00:00:00Z'
+});
+
+parser.addArgument('date_end', {
+  type: dateType,
+  help: 'Final date range ex. ISO 2020-09-09T00:00:00Z'
 });
 
 parser.addArgument([ '-o', '--output' ], {
