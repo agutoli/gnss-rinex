@@ -17,8 +17,13 @@ class NOAA extends BaseAdapter {
   constructor(opts) {
     super(opts);
     this.createTempFolder(`${TEMP_FOLDER_PREFIX}_${new Date().getTime()}`);
-
     this.pendingQueue = [];
+  }
+
+  log(text) {
+    if (this.verbose) {
+      console.log(text);
+    }
   }
 
   buildUrl({ jdn, year, block }) {
@@ -34,7 +39,7 @@ class NOAA extends BaseAdapter {
       // Security check to make sure is same temp
       // prefix to avoid remove wrong folders
       if (this.tempFolder.startsWith(TEMP_FOLDER_PREFIX)) {
-        console.log('Cleanup')
+        this.log('Cleanup')
         try {
           fs.rmdirSync(this.tempFolder, { recursive: true });
         } catch(e) {
@@ -42,7 +47,7 @@ class NOAA extends BaseAdapter {
         }
       }
     } catch(err) {
-      console.log(err);
+      this.log(err);
     }
   }
 
@@ -68,7 +73,7 @@ class NOAA extends BaseAdapter {
       } catch(err) {
         if (!isLastLoop) {
           const nextServer = SERVERS[parseInt(index) + 1];
-          console.log(`${url} (Retrying with ${nextServer.name} server ${nextServer.host})`);
+          this.log(`${url} (Retrying with ${nextServer.name} server ${nextServer.host})`);
           continue;
         }
         switch(err.code) {

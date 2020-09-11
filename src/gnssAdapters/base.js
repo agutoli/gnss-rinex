@@ -9,6 +9,7 @@ const FIRST_CHAR = 97;
 
 class Adapter {
   constructor(args) {
+    this.verbose = args.verbose;
     this.baseId = args.baseId;
     this.start = moment(args.start, 'YYYY-MM-DDTHH:mm:ss');
     this.end = moment(args.end, 'YYYY-MM-DDTHH:mm:ss');

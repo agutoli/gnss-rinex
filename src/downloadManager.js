@@ -2,7 +2,6 @@
 class DownloadManager {
   constructor({ adapter }) {
     this.adapter = adapter;
-
     // list of files to download
     this.filesToDownload = adapter.getFilesToDownload();
 

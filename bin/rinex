@@ -45,24 +45,24 @@ const dmanager = new DownloadManager({
 const rinexMerge = new RinexMerge(args.output);
 
 dmanager.on('start', (url) => {
-  console.log(`${url} (downloading...)`);
+  dmanager.adapter.log(`${url} (downloading...)`);
 });
 
 dmanager.on('pending', (url) => {
-  console.log(`${url} (pending...)`);
+  dmanager.adapter.log(`${url} (pending...)`);
 });
 
 dmanager.on('error', (err) => {
-  console.log(`Download error: ${err}`);
+  dmanager.adapter.log(`Download error: ${err}`);
 });
 
 dmanager.on('finished', (url) => {
-  console.log(`${url} (done)`);
+  dmanager.adapter.log(`${url} (done)`);
 });
 
 dmanager.init({
   success: async (downloadedFiles) => {
-    console.log('Merging rinex files...')
+    dmanager.adapter.log('Merging rinex files...')
     return rinexMerge.mergeFiles(downloadedFiles).then((outputFile) => {
       console.log('outputFile:', outputFile);
     });
